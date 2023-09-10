@@ -1,0 +1,6 @@
+contracts_build
+.DS_Store
+artifacts
+cache
+node_modules/*
+secrets.json
