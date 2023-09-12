@@ -1,15 +1,16 @@
-import { ethers } from "hardhat";
-import { readFileSync } from "fs";
+const hre = require("hardhat")
+const fs = require("fs");
 
 async function interactWithWall(contractAddress, newValue) {
     // Ensure the provided address is valid
-    if (!ethers.utils.isAddress(contractAddress)) {
+    console.log(contractAddress)
+    if (!hre.ethers.utils.isAddress(contractAddress)) {
         throw new Error("Invalid Ethereum address provided.");
     }
 
     // Get the Wall contract instance
-    const WallContract = await ethers.getContractFactory('Wall');
-    const wallInstance = WallContract.attach(contractAddress);
+    const WallContract = await hre.ethers.getContractFactory('Wall');
+    const wallInstance = await WallContract.attach(contractAddress);
 
     // Store the new value in the Wall
     await wallInstance.addEntry(newValue);
@@ -26,8 +27,8 @@ async function interactWithWall(contractAddress, newValue) {
 
 // Main execution
 (async () => {
-    const contractAddressData = readFileSync('../contracts_build/contract-address.json', 'utf8');
-    const { WALL_CONTRACT_ADDRESS } = JSON.parse(contractAddressData);
+    const contractAddressData = fs.readFileSync('../contracts_build/contract-address.json', 'utf8');
+    const WALL_CONTRACT_ADDRESS = JSON.parse(contractAddressData)["Wall"];
 
     // Extract newValue from environment variable
     const newValue = process.env.NEW_VALUE;
